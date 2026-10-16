@@ -15,6 +15,10 @@ The first migration creates `workspaces`, `plan_versions`, and `idempotency_keys
 
 ## Logical data model
 
+See the [database diagram](../diagrams/database-model.html) for the current schema and planned entity relationships.
+
+![Planned logical model of CLARVIO workspaces, evidence, plan versions, tasks, assignments, and approvals](../diagrams/database-planned.png)
+
 | Entity | Relationship and ownership | Version rule |
 | --- | --- | --- |
 | Workspace | Stable customer request container; owns sources, messages, and plan versions. | Points to its latest version. |
@@ -30,6 +34,8 @@ The first migration creates `workspaces`, `plan_versions`, and `idempotency_keys
 Evidence links must resolve to a source passage or customer message in the same workspace. Employee profiles and workload data are a separate planning input; the first release marks them as mock data. Manager and customer identities and access checks are added in ticket 1.
 
 ## Initial physical contract
+
+![Current SQLite schema with workspaces, plan versions, idempotency keys, and migration records](../diagrams/database-current.png)
 
 - `workspaces`: stable ID, name, status, current version, creation and update times.
 - `plan_versions`: composite workspace/version key, status, JSON snapshot, creation time, future actor reference. Rows are inserted and never updated by the application.
