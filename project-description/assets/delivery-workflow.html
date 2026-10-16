@@ -6,73 +6,100 @@
   <title>CLARVIO delivery workflow</title>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--paper:#f5f5f5;--paper-2:#ececec;--ink:#2d3142;--muted:#4f5d75;--soft:#7b8499;--rule:rgba(45,49,66,.14);--accent:#bf4520;--accent-tint:rgba(191,69,32,.08);--sans:'Geist',system-ui,sans-serif;--serif:'Instrument Serif',serif;--mono:'Geist Mono',ui-monospace,monospace}
-    body{background:var(--paper);color:var(--ink);font-family:var(--sans);min-height:100vh;padding:3rem 2rem;display:flex;align-items:center;justify-content:center}
-    .frame{width:100%;max-width:1280px;min-width:0}.eyebrow{font:500 .66rem var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}h1{font:400 clamp(1.5rem,2.4vw + .75rem,2rem)/1.15 var(--serif);letter-spacing:-.02em;margin-bottom:1.5rem}.diagram-container{width:100%;overflow-x:auto}svg{width:100%;min-width:1280px;display:block}@media print{.diagram-container{overflow-x:visible}svg{min-width:0}}
+    *,*::before,*::after{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:32px;background:#f5f5f5;color:#2d3142;font-family:'Geist',system-ui,sans-serif}
+    main{width:100%;max-width:960px;min-width:0}
+    .eyebrow{margin:0 0 8px;color:#4f5d75;font:500 11px 'Geist Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
+    h1{margin:0 0 20px;font:400 32px/1.1 'Instrument Serif',serif}
+    .diagram-container{width:100%;overflow-x:auto}
+    svg{display:block;width:100%;min-width:960px}
+    @media print{.diagram-container{overflow-x:visible}svg{min-width:0}}
   </style>
 </head>
 <body>
-  <main class="frame">
-    <p class="eyebrow">Swimlane · Delivery planning</p>
-    <h1>From request to reviewed delivery commitment</h1>
+  <main>
+    <p class="eyebrow">Project overview · How CLARVIO works</p>
+    <h1>From a customer request to an approved plan</h1>
     <div class="diagram-container">
-      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="delivery-workflow-title delivery-workflow-desc">
+      <svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="delivery-workflow-title delivery-workflow-desc">
         <title id="delivery-workflow-title">CLARVIO delivery workflow</title>
-        <desc id="delivery-workflow-desc">Customer, AI agent, scheduler, and manager move a request through clarification, planning, approval, publication, and controlled change.</desc>
+        <desc id="delivery-workflow-desc">Eight actions in three phases take a customer request through clarification, manager-approved planning, publication, and controlled changes.</desc>
         <defs>
           <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
           <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#bf4520"/></marker>
           <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"/></marker>
         </defs>
-        <rect width="1280" height="720" fill="#f5f5f5"/>
+        <rect width="960" height="600" fill="#f5f5f5"/>
+        <text x="40" y="62" fill="#2d3142" font-family="'Instrument Serif',serif" font-size="28">How CLARVIO turns a request into a commitment</text>
+        <text x="40" y="88" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="11">Read left to right. The manager approves every customer-visible commitment.</text>
 
-        <!-- Lanes -->
-        <rect x="40" y="56" width="1200" height="156" rx="8" fill="#ececec" fill-opacity=".45" stroke="rgba(45,49,66,.14)"/>
-        <rect x="40" y="228" width="1200" height="180" rx="8" fill="#ececec" fill-opacity=".30" stroke="rgba(45,49,66,.14)"/>
-        <rect x="40" y="424" width="1200" height="156" rx="8" fill="#ececec" fill-opacity=".45" stroke="rgba(45,49,66,.14)"/>
-        <text x="64" y="84" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" font-weight="500" letter-spacing=".14em">CUSTOMER</text>
-        <text x="64" y="256" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" font-weight="500" letter-spacing=".14em">AI AGENT + SCHEDULER</text>
-        <text x="64" y="452" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" font-weight="500" letter-spacing=".14em">MANAGER</text>
+        <!-- Three phases, then their connectors. -->
+        <rect x="40" y="132" width="272" height="320" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0"/>
+        <rect x="344" y="132" width="272" height="320" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0"/>
+        <rect x="648" y="132" width="272" height="320" rx="8" fill="#ececec" fill-opacity=".42" stroke="#bfc0c0"/>
+        <line x1="312" y1="292" x2="344" y2="292" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)"/>
+        <line x1="616" y1="292" x2="648" y2="292" stroke="#4f5d75" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-        <!-- Connectors -->
-        <g fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)">
-          <path d="M284 140 H332"/>
-          <path d="M420 176 V272"/>
-          <path d="M508 316 H548 Q556 316 556 308 V184 Q556 176 564 176 H644"/>
-          <path d="M732 140 H752 Q760 140 760 148 V308 Q760 316 768 316 H780"/>
-          <path d="M868 360 V468"/>
-          <path d="M956 508 H976 Q984 508 984 500 V148 Q984 140 992 140 H1004"/>
-        </g>
-        <g fill="none" stroke="#bf4520" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#arrow-accent)">
-          <path d="M868 548 V592 Q868 600 860 600 H428 Q420 600 420 592 V360"/>
-          <path d="M1092 468 V360"/>
-          <path d="M1004 316 H956"/>
-        </g>
-        <rect x="604" y="576" width="128" height="12" rx="2" fill="#f5f5f5"/>
-        <text x="668" y="585" text-anchor="middle" fill="#bf4520" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".06em">REQUEST REVISION</text>
-        <rect x="1104" y="400" width="72" height="12" rx="2" fill="#f5f5f5"/>
-        <text x="1140" y="409" text-anchor="middle" fill="#bf4520" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".06em">NEW NEED</text>
+        <!-- Phase headings -->
+        <text x="60" y="164" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".12em">PHASE 1 · CUSTOMER + AGENT</text>
+        <text x="60" y="188" fill="#2d3142" font-family="'Geist',sans-serif" font-size="14" font-weight="600">Understand the request</text>
+        <text x="364" y="164" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".12em">PHASE 2 · AGENT + MANAGER</text>
+        <text x="364" y="188" fill="#2d3142" font-family="'Geist',sans-serif" font-size="14" font-weight="600">Build a reviewed plan</text>
+        <text x="668" y="164" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".12em">PHASE 3 · SYSTEM + CUSTOMER</text>
+        <text x="668" y="188" fill="#2d3142" font-family="'Geist',sans-serif" font-size="14" font-weight="600">Commit and evolve</text>
 
-        <!-- Nodes -->
-        <g font-family="'Geist',sans-serif" fill="#2d3142" text-anchor="middle">
-          <g><rect x="108" y="104" width="176" height="72" rx="6" fill="#f5f5f5"/><rect x="108" y="104" width="176" height="72" rx="6" fill="rgba(79,93,117,.10)" stroke="#7b8499"/><text x="196" y="136" font-size="12" font-weight="600">1. Explore</text><text x="196" y="154" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">ask about services</text></g>
-          <g><rect x="332" y="104" width="176" height="72" rx="6" fill="#f5f5f5"/><rect x="332" y="104" width="176" height="72" rx="6" fill="rgba(79,93,117,.10)" stroke="#7b8499"/><text x="420" y="136" font-size="12" font-weight="600">2. Upload</text><text x="420" y="154" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">text or PDF</text></g>
-          <g><rect x="332" y="272" width="176" height="88" rx="6" fill="#f5f5f5"/><rect x="332" y="272" width="176" height="88" rx="6" fill="#fff" stroke="#2d3142"/><text x="420" y="310" font-size="12" font-weight="600">3. Clarify</text><text x="420" y="328" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">resolve high-impact gaps</text></g>
-          <g><rect x="556" y="104" width="176" height="72" rx="6" fill="#f5f5f5"/><rect x="556" y="104" width="176" height="72" rx="6" fill="rgba(79,93,117,.10)" stroke="#7b8499"/><text x="644" y="136" font-size="12" font-weight="600">4. Confirm scope</text><text x="644" y="154" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">criteria + boundaries</text></g>
-          <g><rect x="780" y="272" width="176" height="88" rx="6" fill="#f5f5f5"/><rect x="780" y="272" width="176" height="88" rx="6" fill="#fff" stroke="#2d3142"/><text x="868" y="310" font-size="12" font-weight="600">5. Draft plan</text><text x="868" y="328" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">tasks · owners · dates</text></g>
-          <g><rect x="780" y="468" width="176" height="80" rx="6" fill="#f5f5f5"/><rect x="780" y="468" width="176" height="80" rx="6" fill="rgba(191,69,32,.08)" stroke="#bf4520" stroke-width="1.2"/><text x="868" y="502" font-size="12" font-weight="600">6. Review + approve</text><text x="868" y="520" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">manager decision</text></g>
-          <g><rect x="1004" y="104" width="176" height="72" rx="6" fill="#f5f5f5"/><rect x="1004" y="104" width="176" height="72" rx="6" fill="rgba(191,69,32,.08)" stroke="#bf4520" stroke-width="1.2"/><text x="1092" y="136" font-size="12" font-weight="600">7. Publish</text><text x="1092" y="154" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">approved commitment</text></g>
-          <g><rect x="1004" y="272" width="176" height="88" rx="6" fill="#f5f5f5"/><rect x="1004" y="272" width="176" height="88" rx="6" fill="rgba(45,49,66,.02)" stroke="rgba(45,49,66,.28)" stroke-dasharray="4 3"/><text x="1092" y="310" font-size="12" font-weight="600">8. Change request</text><text x="1092" y="328" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">preserve approved baseline</text></g>
+        <!-- Step separators -->
+        <g stroke="#bfc0c0" stroke-opacity=".65" stroke-width=".8">
+          <line x1="60" y1="246" x2="292" y2="246"/><line x1="60" y1="306" x2="292" y2="306"/>
+          <line x1="60" y1="366" x2="292" y2="366"/><line x1="364" y1="302" x2="596" y2="302"/>
+          <line x1="668" y1="302" x2="900" y2="302"/>
         </g>
 
-        <!-- Legend -->
-        <line x1="40" y1="636" x2="1240" y2="636" stroke="rgba(45,49,66,.14)"/>
-        <text x="40" y="660" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".14em">LEGEND</text>
-        <rect x="128" y="649" width="16" height="12" rx="2" fill="#fff" stroke="#2d3142"/><text x="152" y="659" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">WORKING STEP</text>
-        <rect x="276" y="649" width="16" height="12" rx="2" fill="rgba(191,69,32,.08)" stroke="#bf4520"/><text x="300" y="659" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">APPROVAL / COMMITMENT</text>
-        <line x1="492" y1="655" x2="524" y2="655" stroke="#bf4520" stroke-dasharray="5 4"/><text x="536" y="659" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">REVISION PATH</text>
-        <text x="1240" y="660" text-anchor="end" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">ONLY MANAGER-APPROVED VERSIONS BECOME COMMITMENTS</text>
+        <!-- Phase 1: four ordered customer/agent actions -->
+        <g fill="#2d3142" font-family="'Geist',sans-serif">
+          <text x="60" y="220" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">01</text>
+          <text x="88" y="220" font-size="12" font-weight="600">Explore services</text>
+          <text x="88" y="236" fill="#4f5d75" font-size="10">Customer asks what is available</text>
+          <text x="60" y="280" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">02</text>
+          <text x="88" y="280" font-size="12" font-weight="600">Upload the request</text>
+          <text x="88" y="296" fill="#4f5d75" font-size="10">Paste text or add a text PDF</text>
+          <text x="60" y="340" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">03</text>
+          <text x="88" y="340" font-size="12" font-weight="600">Clarify missing decisions</text>
+          <text x="88" y="356" fill="#4f5d75" font-size="10">Agent asks focused questions</text>
+          <text x="60" y="400" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">04</text>
+          <text x="88" y="400" font-size="12" font-weight="600">Confirm scope</text>
+          <text x="88" y="416" fill="#4f5d75" font-size="10">Customer checks deliverables and limits</text>
+        </g>
+
+        <!-- Phase 2: proposal and human decision -->
+        <g fill="#2d3142" font-family="'Geist',sans-serif">
+          <text x="364" y="228" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">05</text>
+          <text x="392" y="228" font-size="12" font-weight="600">Draft the plan</text>
+          <text x="392" y="248" fill="#4f5d75" font-size="10">Tasks, owners, effort, milestones</text>
+          <text x="392" y="264" fill="#4f5d75" font-size="10">and capacity-based dates</text>
+        </g>
+        <rect x="360" y="320" width="240" height="100" rx="6" fill="#f5f5f5"/>
+        <rect x="360" y="320" width="240" height="100" rx="6" fill="rgba(191,69,32,.08)" stroke="#bf4520" stroke-width="1.2"/>
+        <text x="376" y="344" fill="#bf4520" font-family="'Geist Mono',monospace" font-size="9">06 · MANAGER GATE</text>
+        <text x="376" y="366" fill="#2d3142" font-family="'Geist',sans-serif" font-size="12" font-weight="600">Review and approve</text>
+        <text x="376" y="386" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="10">Edit scope, effort, owners, and dates</text>
+        <text x="376" y="402" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="10">or send blockers to clarification</text>
+
+        <!-- Phase 3: published output and later change -->
+        <rect x="664" y="204" width="240" height="84" rx="6" fill="#f5f5f5"/>
+        <rect x="664" y="204" width="240" height="84" rx="6" fill="rgba(191,69,32,.08)" stroke="#bf4520" stroke-width="1.2"/>
+        <text x="680" y="228" fill="#bf4520" font-family="'Geist Mono',monospace" font-size="9">07 · APPROVED OUTPUT</text>
+        <text x="680" y="250" fill="#2d3142" font-family="'Geist',sans-serif" font-size="12" font-weight="600">Publish the commitment</text>
+        <text x="680" y="270" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="10">Plan, dates, and conditions</text>
+        <text x="668" y="340" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="9">08</text>
+        <text x="696" y="340" fill="#2d3142" font-family="'Geist',sans-serif" font-size="12" font-weight="600">Handle a change request</text>
+        <text x="696" y="360" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="10">New needs start a revised plan</text>
+        <text x="696" y="376" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="10">for manager approval</text>
+
+        <line x1="40" y1="492" x2="920" y2="492" stroke="#bfc0c0" stroke-width=".8"/>
+        <text x="40" y="520" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".1em">CONTROL RULE</text>
+        <text x="40" y="544" fill="#2d3142" font-family="'Geist',sans-serif" font-size="11">Only the manager-approved version is a customer-visible commitment.</text>
+        <text x="40" y="562" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="10">A later request creates a new proposal; the approved baseline stays active until the revision is approved.</text>
       </svg>
     </div>
   </main>

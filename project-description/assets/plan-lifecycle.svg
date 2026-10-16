@@ -1,5 +1,94 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="315" viewBox="0 0 960 315" role="img" aria-labelledby="title desc">
-  <title id="title">Plan lifecycle and approval boundary</title><desc id="desc">A plan moves from Clarifying to Draft to Awaiting manager review to Approved. Revisions can return it to drafting; approved plans remain immutable baselines while changes create a new version.</desc>
-  <defs><style>.bg{fill:#f8fafc}.node{stroke-width:2}.n1{fill:#e0f2fe;stroke:#0284c7}.n2{fill:#ede9fe;stroke:#7c3aed}.n3{fill:#fef3c7;stroke:#d97706}.n4{fill:#dcfce7;stroke:#16a34a}.n5{fill:#fff7ed;stroke:#ea580c}.title{font:700 28px Arial,sans-serif;fill:#0f172a}.label{font:700 18px Arial,sans-serif;fill:#0f172a}.small{font:14px Arial,sans-serif;fill:#475569}.arrow{stroke:#64748b;stroke-width:3;fill:none;marker-end:url(#a)}.revision{stroke:#ea580c;stroke-width:3;fill:none;stroke-dasharray:8 6;marker-end:url(#o)}</style><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#64748b"/></marker><marker id="o" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#ea580c"/></marker></defs>
-  <g transform="scale(0.75)"><rect class="bg" width="1280" height="420" rx="24"/><text x="40" y="50" class="title">Plan lifecycle and approval boundary</text><rect x="55" y="120" width="200" height="90" rx="16" class="node n1"/><text x="155" y="155" text-anchor="middle" class="label">Clarifying</text><text x="155" y="180" text-anchor="middle" class="small">Questions + evidence</text><rect x="335" y="120" width="200" height="90" rx="16" class="node n2"/><text x="435" y="155" text-anchor="middle" class="label">Draft</text><text x="435" y="180" text-anchor="middle" class="small">Proposed plan</text><rect x="615" y="120" width="240" height="90" rx="16" class="node n3"/><text x="735" y="155" text-anchor="middle" class="label">Awaiting review</text><text x="735" y="180" text-anchor="middle" class="small">Manager decision required</text><rect x="935" y="120" width="240" height="90" rx="16" class="node n4"/><text x="1055" y="155" text-anchor="middle" class="label">Approved vN</text><text x="1055" y="180" text-anchor="middle" class="small">Published commitment</text><path d="M255 165 H335" class="arrow"/><path d="M535 165 H615" class="arrow"/><path d="M855 165 H935" class="arrow"/><path d="M735 210 C735 300 435 300 435 210" class="revision"/><text x="550" y="285" class="small">Manager requests revision</text><rect x="935" y="300" width="240" height="70" rx="16" class="node n5"/><text x="1055" y="329" text-anchor="middle" class="label">Change request vN+1</text><text x="1055" y="351" text-anchor="middle" class="small">Baseline vN stays active</text><path d="M1055 210 V300" class="revision"/><path d="M935 335 C820 335 820 235 735 210" class="revision"/><text x="55" y="365" class="small">Preliminary plans may be visible, but must be labeled unapproved.</text></g>
-</svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="plan-lifecycle-title plan-lifecycle-desc" id="plan-lifecycle-root">
+        <title id="plan-lifecycle-title">Plan lifecycle and approval boundary</title>
+        <desc id="plan-lifecycle-desc">A plan moves through clarification, drafting, manager review, and approval; review revisions return to Draft, while later customer changes create a new draft without replacing the approved baseline.</desc>
+        <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #plan-lifecycle-root { color: #2d3142; font-family: 'Geist',system-ui,sans-serif; }
+      #plan-lifecycle-root .diagram-container { width:100%;overflow-x:auto }
+      #plan-lifecycle-root .diagram-container { overflow-x:visible }</style>
+          <marker id="plan-lifecycle-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#4f5d75"/></marker>
+          <marker id="plan-lifecycle-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#bf4520"/></marker>
+          <marker id="plan-lifecycle-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#2e5aa8"/></marker>
+        </defs>
+        <rect width="960" height="600" fill="#f5f5f5"/>
+        <text x="40" y="62" fill="#2d3142" font-family="'Instrument Serif',serif" font-size="28">A plan becomes official only after manager approval</text>
+        <text x="40" y="88" fill="#4f5d75" font-family="'Geist',sans-serif" font-size="11">The top row is the normal path. Lower states show how revisions are handled.</text>
+
+        <!-- Boundary and phase rail -->
+        <line x1="716" y1="132" x2="716" y2="488" stroke="#bf4520" stroke-width="1.2" stroke-dasharray="4 4"/>
+        <text x="728" y="152" fill="#bf4520" font-family="'Geist Mono',monospace" font-size="8" letter-spacing=".08em">APPROVAL BOUNDARY</text>
+        <g fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#plan-lifecycle-arrow)">
+          <path d="M220 260 H272"/><path d="M452 260 H504"/>
+        </g>
+        <path d="M684 260 H736" fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#plan-lifecycle-arrow)"/>
+
+        <!-- Distinct, masked transition labels -->
+        <rect x="228" y="236" width="36" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="246" y="245" text-anchor="middle" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">SCOPE</text>
+        <rect x="460" y="236" width="36" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="478" y="245" text-anchor="middle" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">SUBMIT</text>
+        <rect x="690" y="236" width="40" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="710" y="245" text-anchor="middle" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">APPROVE</text>
+
+        <!-- Revision routes stay below the primary rail -->
+        <g fill="none" stroke="#4f5d75" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#plan-lifecycle-arrow)">
+          <path d="M584 308 V376"/>
+          <path d="M504 420 H372 Q364 420 364 412 V308"/>
+          <path d="M828 308 V376"/>
+          <path d="M800 464 V504 Q800 512 792 512 H308 Q300 512 300 504 V308"/>
+        </g>
+        <rect x="604" y="338" width="64" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="636" y="347" text-anchor="middle" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">REVISE</text>
+        <rect x="412" y="396" width="72" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="448" y="405" text-anchor="middle" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">REDRAFT</text>
+        <rect x="742" y="338" width="68" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="776" y="347" text-anchor="middle" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">NEW NEED</text>
+        <rect x="548" y="488" width="76" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="586" y="497" text-anchor="middle" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">NEW DRAFT</text>
+
+        <!-- Four primary states -->
+        <g font-family="'Geist',sans-serif" fill="#2d3142">
+          <rect x="40" y="212" width="180" height="96" rx="8" fill="#f5f5f5"/>
+          <rect x="40" y="212" width="180" height="96" rx="8" fill="#4f5d75" stroke="#7b8499" fill-opacity=".10"/>
+          <text x="56" y="240" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">01 · CUSTOMER + AGENT</text>
+          <text x="56" y="264" font-size="12" font-weight="600">Clarifying</text>
+          <text x="56" y="284" fill="#4f5d75" font-size="10">Resolve needs and evidence</text>
+
+          <rect x="272" y="212" width="180" height="96" rx="8" fill="#f5f5f5"/>
+          <rect x="272" y="212" width="180" height="96" rx="8" fill="#fff" stroke="#2d3142"/>
+          <text x="288" y="240" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">02 · AI + SCHEDULER</text>
+          <text x="288" y="264" font-size="12" font-weight="600">Draft</text>
+          <text x="288" y="284" fill="#4f5d75" font-size="10">Proposed scope and dates</text>
+
+          <rect x="504" y="212" width="180" height="96" rx="8" fill="#f5f5f5"/>
+          <rect x="504" y="212" width="180" height="96" rx="8" fill="#fff" stroke="#2d3142"/>
+          <text x="520" y="240" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">03 · MANAGER</text>
+          <text x="520" y="264" font-size="12" font-weight="600">Awaiting review</text>
+          <text x="520" y="284" fill="#4f5d75" font-size="10">Edit, approve, or revise</text>
+
+          <rect x="736" y="212" width="184" height="96" rx="8" fill="#f5f5f5"/>
+          <rect x="736" y="212" width="184" height="96" rx="8" fill="#bf4520" stroke="#bf4520" stroke-width="1.2" fill-opacity=".08"/>
+          <text x="752" y="240" fill="#bf4520" font-family="'Geist Mono',monospace" font-size="8">04 · PUBLISHED</text>
+          <text x="752" y="264" font-size="12" font-weight="600">Approved vN</text>
+          <text x="752" y="284" fill="#4f5d75" font-size="10">Customer commitment</text>
+        </g>
+
+        <!-- Two supporting states -->
+        <g font-family="'Geist',sans-serif" fill="#2d3142">
+          <rect x="504" y="376" width="180" height="88" rx="8" fill="#f5f5f5"/>
+          <rect x="504" y="376" width="180" height="88" rx="8" fill="#fff" stroke="#7b8499" stroke-dasharray="4 3"/>
+          <text x="520" y="404" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">BEFORE APPROVAL</text>
+          <text x="520" y="428" font-size="12" font-weight="600">Revision requested</text>
+          <text x="520" y="448" fill="#4f5d75" font-size="10">Return to the same draft</text>
+
+          <rect x="736" y="376" width="184" height="88" rx="8" fill="#f5f5f5"/>
+          <rect x="736" y="376" width="184" height="88" rx="8" fill="#fff" stroke="#7b8499" stroke-dasharray="4 3"/>
+          <text x="752" y="404" fill="#4f5d75" font-family="'Geist Mono',monospace" font-size="8">AFTER APPROVAL</text>
+          <text x="752" y="428" font-size="12" font-weight="600">Change request</text>
+          <text x="752" y="448" fill="#4f5d75" font-size="10">Start version vN+1</text>
+        </g>
+
+        <line x1="40" y1="544" x2="920" y2="544" stroke="#bfc0c0" stroke-width=".8"/>
+        <text x="40" y="570" fill="#2d3142" font-family="'Geist',sans-serif" font-size="10">Approved vN remains active until a revised version receives manager approval.</text>
+      </svg>
