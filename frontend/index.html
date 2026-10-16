@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLARVIO Workspaces</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-icon">C</span><div><strong>CLARVIO</strong><small>Delivery planning</small></div></div>
+      <div class="side-title"><span>WORKSPACES</span><button id="new-workspace" type="button" aria-label="New workspace">+</button></div>
+      <nav id="workspace-list" aria-label="Workspace list"></nav>
+      <p class="sidebar-foot">Keep the request and every plan decision in one place.</p>
+    </aside>
+    <main>
+      <header class="topbar"><span>Workspace <b>/</b> <strong id="breadcrumb">Overview</strong></span><span class="top-status">● &nbsp;Saved locally</span></header>
+      <div id="notice" class="notice" role="status" aria-live="polite"></div>
+      <div id="view" class="view"></div>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
