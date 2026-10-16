@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 /database/data/
 .env
+~$*.docx
