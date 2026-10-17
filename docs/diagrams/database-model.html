@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CLARVIO database model</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root { --paper:#f5f8f7; --ink:#193137; --muted:#516a6d; --accent:#19746b; --rule:#c9dad7; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+    .page { max-width:1360px; margin:0 auto; padding:48px 40px 64px; }
+    .eyebrow { margin:0 0 10px; color:var(--accent); font-family:'Geist Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.13em; text-transform:uppercase; }
+    h1 { margin:0; font-size:clamp(28px,3vw,40px); line-height:1.15; letter-spacing:-.04em; }
+    .intro { max-width:760px; margin:14px 0 44px; color:var(--muted); font-size:14px; line-height:1.6; }
+    section { margin:0 0 48px; }
+    h2 { font-size:21px; letter-spacing:-.03em; margin:0 0 8px; }
+    section p { max-width:880px; margin:0 0 16px; color:var(--muted); font-size:13px; line-height:1.65; }
+    .diagram-container { width:100%; overflow-x:auto; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); }
+    svg { width:100%; min-width:1280px; display:block; }
+    .note { margin-top:15px; }
+    code { font-family:'Geist Mono',monospace; font-size:.9em; }
+    @media print { .page { padding:0; } .diagram-container { overflow-x:visible; } svg { min-width:0; } section { break-inside:avoid; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <p class="eyebrow">CLARVIO / Database design</p>
+    <h1>Workspace data, from request to approved plan</h1>
+    <p class="intro">The first view shows tables that exist today. The second shows the relationships planned for document intake, clarification, task planning, assignment, and approval.</p>
+    <section aria-labelledby="physical-heading">
+      <h2 id="physical-heading">Current SQLite schema</h2>
+      <p>Migration <code>0001_workspace_versions.sql</code> creates the first three tables; the store bootstraps <code>schema_migrations</code>. Only <code>plan_versions.workspace_id</code> is a database foreign key.</p>
+      <div class="diagram-container"><svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="database-model-physical-title database-model-physical-desc">
+<title id="database-model-physical-title">CLARVIO current SQLite schema</title>
+<desc id="database-model-physical-desc">Four current tables: workspaces, plan_versions, idempotency_keys, and schema_migrations. Plan versions reference workspaces with a restrictive foreign key.</desc>
+<defs>
+      <marker id="physical-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#516a6d"/></marker>
+      <marker id="physical-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#19746b"/></marker>
+      <marker id="physical-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#193137"/></marker>
+    </defs>
+<rect x="0" y="0" width="1280" height="720" fill="#f5f8f7"/>
+<text x="56" y="60" fill="#19746b" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".14em">MIGRATION 0001  /  APPLIED TABLES</text>
+<text x="56" y="88" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="500">The workspace and every saved plan version survive a restart.</text>
+<path d="M 744,168 H 552" fill="none" stroke="#516a6d" stroke-width="1.4" marker-end="url(#physical-arrow)"/>
+<rect x="580" y="140" width="136" height="14" rx="2" fill="#f5f8f7"/>
+<text x="648" y="150" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">ON DELETE RESTRICT</text>
+<rect x="56" y="116" width="496" height="228" rx="6" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<rect x="56" y="116" width="496" height="36" rx="6" fill="#edf4f1"/>
+<rect x="56" y="146" width="496" height="6" rx="0" fill="#edf4f1"/>
+<line x1="56" y1="152" x2="552" y2="152" stroke="#c9dad7" stroke-width="1"/>
+<text x="72" y="140" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">workspaces</text>
+<rect x="472" y="126" width="64" height="16" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="504" y="137" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing=".08em">TABLE</text>
+<rect x="57" y="152" width="494" height="32" rx="0" fill="#f8fbf9"/>
+<text x="72" y="173" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">id</text>
+<rect x="364" y="161" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="172" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">PK</text>
+<text x="536" y="173" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="72" y="205" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">name</text>
+<rect x="364" y="193" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="204" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="205" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<rect x="57" y="216" width="494" height="32" rx="0" fill="#f8fbf9"/>
+<text x="72" y="237" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">status</text>
+<rect x="364" y="225" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="236" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="237" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="72" y="269" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">current_version</text>
+<rect x="364" y="257" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="268" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="269" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">INTEGER</text>
+<rect x="57" y="280" width="494" height="32" rx="0" fill="#f8fbf9"/>
+<text x="72" y="301" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">created_at</text>
+<rect x="364" y="289" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="300" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="301" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="72" y="333" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">updated_at</text>
+<rect x="364" y="321" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="332" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="333" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<rect x="744" y="116" width="480" height="268" rx="6" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<rect x="744" y="116" width="480" height="36" rx="6" fill="#edf4f1"/>
+<rect x="744" y="146" width="480" height="6" rx="0" fill="#edf4f1"/>
+<line x1="744" y1="152" x2="1224" y2="152" stroke="#c9dad7" stroke-width="1"/>
+<text x="760" y="140" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">plan_versions</text>
+<rect x="1144" y="126" width="64" height="16" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1176" y="137" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing=".08em">TABLE</text>
+<rect x="745" y="152" width="478" height="32" rx="0" fill="#f8fbf9"/>
+<text x="760" y="173" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">workspace_id</text>
+<rect x="1036" y="161" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1051" y="172" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">PK</text>
+<rect x="1070" y="161" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1085" y="172" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">FK</text>
+<text x="1208" y="173" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="760" y="205" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">version</text>
+<rect x="1036" y="193" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1051" y="204" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">PK</text>
+<text x="1208" y="205" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">INTEGER</text>
+<rect x="745" y="216" width="478" height="32" rx="0" fill="#f8fbf9"/>
+<text x="760" y="237" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">status</text>
+<rect x="1036" y="225" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1051" y="236" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="1208" y="237" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="760" y="269" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">snapshot_json</text>
+<rect x="1036" y="257" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1051" y="268" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="1208" y="269" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<rect x="745" y="280" width="478" height="32" rx="0" fill="#f8fbf9"/>
+<text x="760" y="301" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">created_at</text>
+<rect x="1036" y="289" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1051" y="300" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="1208" y="301" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="760" y="333" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">actor_ref</text>
+<text x="1208" y="333" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<line x1="744" y1="344" x2="1224" y2="344" stroke="#c9dad7" stroke-width="1"/>
+<text x="760" y="359" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" letter-spacing=".12em">INDEX</text>
+<text x="760" y="375" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">plan_versions_by_workspace (workspace_id, version DESC)</text>
+<rect x="56" y="412" width="496" height="196" rx="6" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<rect x="56" y="412" width="496" height="36" rx="6" fill="#edf4f1"/>
+<rect x="56" y="442" width="496" height="6" rx="0" fill="#edf4f1"/>
+<line x1="56" y1="448" x2="552" y2="448" stroke="#c9dad7" stroke-width="1"/>
+<text x="72" y="436" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">idempotency_keys</text>
+<rect x="472" y="422" width="64" height="16" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="504" y="433" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing=".08em">TABLE</text>
+<rect x="57" y="448" width="494" height="32" rx="0" fill="#f8fbf9"/>
+<text x="72" y="469" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">scope</text>
+<rect x="364" y="457" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="468" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">PK</text>
+<text x="536" y="469" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="72" y="501" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">key</text>
+<rect x="364" y="489" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="500" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">PK</text>
+<text x="536" y="501" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<rect x="57" y="512" width="494" height="32" rx="0" fill="#f8fbf9"/>
+<text x="72" y="533" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">request_hash</text>
+<rect x="364" y="521" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="532" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="533" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="72" y="565" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">response_json</text>
+<rect x="364" y="553" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="564" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="565" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<rect x="57" y="576" width="494" height="32" rx="0" fill="#f8fbf9"/>
+<text x="72" y="597" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">created_at</text>
+<rect x="364" y="585" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="379" y="596" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="536" y="597" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<rect x="744" y="412" width="480" height="100" rx="6" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<rect x="744" y="412" width="480" height="36" rx="6" fill="#edf4f1"/>
+<rect x="744" y="442" width="480" height="6" rx="0" fill="#edf4f1"/>
+<line x1="744" y1="448" x2="1224" y2="448" stroke="#c9dad7" stroke-width="1"/>
+<text x="760" y="436" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">schema_migrations</text>
+<rect x="1144" y="422" width="64" height="16" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1176" y="433" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle" letter-spacing=".08em">BOOTSTRAP</text>
+<rect x="745" y="448" width="478" height="32" rx="0" fill="#f8fbf9"/>
+<text x="760" y="469" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">version</text>
+<rect x="1036" y="457" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1051" y="468" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">PK</text>
+<text x="1208" y="469" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<text x="760" y="501" fill="#193137" font-size="12" font-family="'Inter', sans-serif" font-weight="500">applied_at</text>
+<rect x="1036" y="489" width="30" height="15" rx="2" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<text x="1051" y="500" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">NN</text>
+<text x="1208" y="501" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">TEXT</text>
+<line x1="56" y1="652" x2="1224" y2="652" stroke="#c9dad7" stroke-width="1"/>
+<text x="56" y="676" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">KEY</text>
+<text x="120" y="676" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">PK  primary key</text>
+<text x="340" y="676" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">FK  foreign key</text>
+<text x="570" y="676" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">NN  not null</text>
+<text x="784" y="676" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">CHECK constraints are in the SQL migration</text>
+</svg></div>
+      <p class="note">A save inserts a new plan version and advances <code>workspaces.current_version</code> in one transaction. PK chips on two rows form a composite key. The pointer and idempotency scope are enforced by application logic; additional CHECK rules live in the SQL migration.</p>
+    </section>
+    <section aria-labelledby="logical-heading">
+      <h2 id="logical-heading">Planned logical model</h2>
+      <p>Only Workspace and Plan version are implemented so far. Other boxes describe domain records from ADR 0001, not existing SQL tables or finalized columns.</p>
+      <div class="diagram-container"><svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="database-model-logical-title database-model-logical-desc">
+<title id="database-model-logical-title">CLARVIO planned data model</title>
+<desc id="database-model-logical-desc">A workspace owns sources, messages, and plan versions. Each plan version owns requirements, assumptions, tasks, assignments, and an optional approval; most entities are planned for later migrations.</desc>
+<defs>
+      <marker id="logical-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#516a6d"/></marker>
+      <marker id="logical-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#19746b"/></marker>
+      <marker id="logical-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#193137"/></marker>
+    </defs>
+<rect x="0" y="0" width="1280" height="720" fill="#f5f8f7"/>
+<text x="56" y="60" fill="#19746b" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".14em">LOGICAL MODEL  /  FUTURE MIGRATIONS</text>
+<text x="56" y="88" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="500">Version boundaries keep evidence, decisions, and delivery work together.</text>
+<path d="M 456,162 H 356" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 756,162 H 856" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 606,220 V 312" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 456,370 H 356" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 756,370 H 856" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 516,428 V 464 Q 516,472 508,472 H 214 Q 206,472 206,480 V 520" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 606,428 V 520" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 696,428 V 464 Q 696,472 704,472 H 998 Q 1006,472 1006,480 V 520" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<path d="M 356,578 H 456" fill="none" stroke="#516a6d" stroke-width="1.35"/>
+<rect x="432.0" y="142" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="438" y="151" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="358.0" y="142" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="374" y="151" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="768.0" y="142" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="774" y="151" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="822.0" y="142" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="838" y="151" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="432.0" y="350" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="438" y="359" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="358.0" y="350" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="374" y="359" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="768.0" y="350" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="774" y="359" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="822.0" y="350" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="838" y="359" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="368.0" y="558" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="374" y="567" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="422.0" y="558" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="438" y="567" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="614" y="233" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="620.0" y="242" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="614" y="287" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="630.0" y="296" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1..*</text>
+<rect x="496" y="441" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="502.0" y="450" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="214" y="492" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="230.0" y="501" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="614" y="441" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="620.0" y="450" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="614" y="493" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="630.0" y="502" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="704" y="441" width="12" height="12" rx="2" fill="#f5f8f7"/>
+<text x="710.0" y="450" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">1</text>
+<rect x="966" y="492" width="32" height="12" rx="2" fill="#f5f8f7"/>
+<text x="982.0" y="501" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="500" text-anchor="middle">0..*</text>
+<rect x="56" y="104" width="300" height="116" rx="6" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="57" y="105" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="57" y="144" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="56" y1="150" x2="356" y2="150" stroke="#9db7b2" stroke-width="1"/>
+<text x="72" y="121" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">PLANNED</text>
+<text x="72" y="141" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Source</text>
+<text x="72" y="177" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">workspace-owned document</text>
+<text x="72" y="200" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">passages used as evidence</text>
+<rect x="456" y="104" width="300" height="116" rx="6" fill="#ffffff" stroke="#19746b" stroke-width="1.2"/>
+<rect x="457" y="105" width="298" height="45" rx="5" fill="#e5f2ed"/>
+<rect x="457" y="144" width="298" height="6" rx="0" fill="#e5f2ed"/>
+<line x1="456" y1="150" x2="756" y2="150" stroke="#19746b" stroke-width="1"/>
+<text x="472" y="121" fill="#19746b" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">LIVE</text>
+<text x="472" y="141" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Workspace</text>
+<text x="472" y="177" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">stable customer request</text>
+<text x="472" y="200" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">current_version pointer</text>
+<rect x="856" y="104" width="300" height="116" rx="6" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="857" y="105" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="857" y="144" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="856" y1="150" x2="1156" y2="150" stroke="#9db7b2" stroke-width="1"/>
+<text x="872" y="121" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">PLANNED</text>
+<text x="872" y="141" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Message</text>
+<text x="872" y="177" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">workspace-owned turn</text>
+<text x="872" y="200" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">customer or assistant</text>
+<rect x="56" y="312" width="300" height="116" rx="6" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="57" y="313" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="57" y="352" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="56" y1="358" x2="356" y2="358" stroke="#9db7b2" stroke-width="1"/>
+<text x="72" y="329" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">PLANNED</text>
+<text x="72" y="349" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Requirement</text>
+<text x="72" y="385" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">versioned requested outcome</text>
+<text x="72" y="408" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">source / message evidence</text>
+<rect x="456" y="312" width="300" height="116" rx="6" fill="#ffffff" stroke="#c9dad7" stroke-width="1"/>
+<rect x="457" y="313" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="457" y="352" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="456" y1="358" x2="756" y2="358" stroke="#c9dad7" stroke-width="1"/>
+<text x="472" y="329" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">LIVE</text>
+<text x="472" y="349" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Plan version</text>
+<text x="472" y="385" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">workspace_id + version</text>
+<text x="472" y="408" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">immutable plan snapshot</text>
+<rect x="856" y="312" width="300" height="116" rx="6" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="857" y="313" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="857" y="352" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="856" y1="358" x2="1156" y2="358" stroke="#9db7b2" stroke-width="1"/>
+<text x="872" y="329" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">PLANNED</text>
+<text x="872" y="349" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Assumption</text>
+<text x="872" y="385" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">versioned proposed condition</text>
+<text x="872" y="408" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">customer decision</text>
+<rect x="56" y="520" width="300" height="116" rx="6" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="57" y="521" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="57" y="560" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="56" y1="566" x2="356" y2="566" stroke="#9db7b2" stroke-width="1"/>
+<text x="72" y="537" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">PLANNED</text>
+<text x="72" y="557" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Task</text>
+<text x="72" y="593" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">versioned delivery work</text>
+<text x="72" y="616" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">requirement / dependency links</text>
+<rect x="456" y="520" width="300" height="116" rx="6" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="457" y="521" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="457" y="560" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="456" y1="566" x2="756" y2="566" stroke="#9db7b2" stroke-width="1"/>
+<text x="472" y="537" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">PLANNED</text>
+<text x="472" y="557" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Assignment</text>
+<text x="472" y="593" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">task and plan version</text>
+<text x="472" y="616" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">employee + rationale</text>
+<rect x="856" y="520" width="300" height="116" rx="6" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="857" y="521" width="298" height="45" rx="5" fill="#edf4f1"/>
+<rect x="857" y="560" width="298" height="6" rx="0" fill="#edf4f1"/>
+<line x1="856" y1="566" x2="1156" y2="566" stroke="#9db7b2" stroke-width="1"/>
+<text x="872" y="537" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">PLANNED</text>
+<text x="872" y="557" fill="#193137" font-size="14" font-family="'Inter', sans-serif" font-weight="600">Approval</text>
+<text x="872" y="593" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">exact approved plan version</text>
+<text x="872" y="616" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">manager and timestamp</text>
+<line x1="56" y1="660" x2="1224" y2="660" stroke="#c9dad7" stroke-width="1"/>
+<text x="56" y="684" fill="#516a6d" font-size="8" font-family="'Geist Mono', monospace" font-weight="600" letter-spacing=".12em">KEY</text>
+<rect x="112" y="672" width="20" height="12" rx="2" fill="#e5f2ed" stroke="#19746b" stroke-width="1"/>
+<text x="142" y="683" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">Implemented</text>
+<rect x="300" y="672" width="20" height="12" rx="2" fill="#ffffff" stroke="#9db7b2" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="330" y="683" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">Planned</text>
+<text x="512" y="683" fill="#516a6d" font-size="9" font-family="'Geist Mono', monospace">1 · one     1..* · one or more     0..* · zero or many</text>
+</svg></div>
+      <p class="note">Evidence links from Requirements to Sources or Messages, Task dependencies, and employee workload inputs are described in the ADR. Their join tables and keys will be designed in later migrations.</p>
+    </section>
+  </main>
+</body>
+</html>
